@@ -1,0 +1,10 @@
+Chiplet_1,Total readEnergy,1.06987e+06,pJ
+Chiplet_1,Total leakage Energy,1659.56,pJ
+Chiplet_1,Total Routing Energy,415009,pJ
+Chiplet_1,Total Buffer Energy,997.22,pJ
+Chiplet_1,Total Local Buffer Energy,934.067,pJ
+Chiplet_1,Total Local Routing Energy,362981,pJ
+Chiplet_1,Total ADC Energy,639003,pJ
+Chiplet_1,Total Accumulation Energy,11628,pJ
+Chiplet_1,Total Other Peripheries Energy,635.52,pJ
+Chiplet_1,Total Array Energy,2594.41,pJ

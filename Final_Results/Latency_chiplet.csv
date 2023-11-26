@@ -1,0 +1,7 @@
+Chiplet_1,Total readLatency,190.985,ns
+Chiplet_1,Total Buffer Latency,11.5884,ns
+Chiplet_1,Total Routing Latency,54.7139,ns
+Chiplet_1,Total ADC Latency,71.0196,ns
+Chiplet_1,Total Accumulation Latency,12.1105,ns
+Chiplet_1,Total Other Peripheries Latency,41.2939,ns
+Chiplet_1,Total Array Latency,0.25856,ns

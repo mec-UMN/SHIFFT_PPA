@@ -1,0 +1,1 @@
+./SIAM/main ./SIAM/NetWork.csv 8 8 ./layer_record/weight_layer0.csv ./layer_record/input_layer0.csv 
