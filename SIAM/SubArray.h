@@ -64,6 +64,7 @@
 #include "CurrentSenseAmp.h"
 #include "MultilevelSenseAmp.h"
 #include "MultilevelSAEncoder.h"
+#include "DAC.h"
 
 
 using namespace std;
@@ -128,6 +129,7 @@ public:
 	bool XNORsequentialMode;
 	bool XNORparallelMode;
 	bool currentMode;
+	bool inputdacmode;
 
 	int levelOutput;
 
@@ -168,6 +170,7 @@ public:
 	SwitchMatrix    slSwitchMatrix;
 	SwitchMatrix    blSwitchMatrix;
 	SwitchMatrix    wlSwitchMatrix;
+	DAC	dac;
 	DeMux   deMux;
 	ReadCircuit readCircuit;
 	Precharger precharger;
@@ -179,6 +182,7 @@ public:
 	DFF dff;
 	Adder adder;
 	ShiftAdd shiftAdd;
+	ShiftAdd                 shiftAddWeight;
 	MultilevelSenseAmp multilevelSenseAmp;
 	MultilevelSAEncoder multilevelSAEncoder;
 };

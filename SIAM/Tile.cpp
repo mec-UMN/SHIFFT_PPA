@@ -104,8 +104,14 @@ void TileInitialize_new(InputParameter& inputParameter, Technology& tech, MemCel
 	ProcessingUnitInitialize(subArrayInPE, inputParameter, tech, cell, ceil(sqrt(numSubArray)), ceil(sqrt(numSubArray)), desiredIMCsize_x, desiredIMCsize_y);
 
 	if (param->parallelRead) {
-		accumulation->Initialize((int) ceil((double)sqrt(numPE)), ceil((double)log2((double)param->levelOutput))+param->numBitInput+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)),
+		if(param->inputdacmode){
+			accumulation->Initialize((int) ceil((double)sqrt(numPE)), ceil((double)log2((double)param->levelOutput))+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)),
 								ceil((double)sqrt((double)numPE)*(double)desiredIMCsize_y/(double)param->numColMuxed));
+		}
+		else{
+			accumulation->Initialize((int) ceil((double)sqrt(numPE)), ceil((double)log2((double)param->levelOutput))+param->numBitInput+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)),
+								ceil((double)sqrt((double)numPE)*(double)desiredIMCsize_y/(double)param->numColMuxed));
+		}
 		if (!param->chipActivation) {
 			if (param->reLu) {
 				reLu->Initialize(ceil((double)peSize_y*(double)desiredIMCsize_y/(double)param->numColMuxed), param->numBitInput, param->clkFreq);
@@ -126,11 +132,24 @@ void TileInitialize_new(InputParameter& inputParameter, Technology& tech, MemCel
 			//outputBuffer->Initialize((ceil((double)log2((double)param->levelOutput))+param->numBitInput+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE*desiredIMCsize_y/param->numColMuxed,
 								//(ceil((double)log2((double)param->levelOutput))+param->numBitInput+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE,
 								//1, param->unitLengthWireResistance, param->clkFreq, param->peBufferType);
-			numOutBufferCore = ceil(((ceil((double)log2((double)param->levelOutput))+param->numBitInput+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE*desiredIMCsize_y/param->numColMuxed)/(param->tileBufferCoreSizeRow*param->tileBufferCoreSizeCol));
+			if(param->inputdacmode){
+				numOutBufferCore = ceil(((ceil((double)log2((double)param->levelOutput))+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE*desiredIMCsize_y/param->numColMuxed)/(param->tileBufferCoreSizeRow*param->tileBufferCoreSizeCol));
+			}
+			else{
+				numOutBufferCore = ceil(((ceil((double)log2((double)param->levelOutput))+param->numBitInput+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE*desiredIMCsize_y/param->numColMuxed)/(param->tileBufferCoreSizeRow*param->tileBufferCoreSizeCol));
+			}
 			if (((ceil((double)log2((double)param->levelOutput))+param->numBitInput+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE*desiredIMCsize_y/param->numColMuxed) < (param->tileBufferCoreSizeRow*param->tileBufferCoreSizeCol)) {
+				if(param->inputdacmode){
+					outputBuffer->Initialize((ceil((double)log2((double)param->levelOutput))+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE*desiredIMCsize_y/param->numColMuxed, 
+								(ceil((double)log2((double)param->levelOutput))+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE, 
+								1, param->unitLengthWireResistance, param->clkFreq, param->peBufferType);
+		
+				}
+				else{
 				outputBuffer->Initialize((ceil((double)log2((double)param->levelOutput))+param->numBitInput+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE*desiredIMCsize_y/param->numColMuxed, 
 								(ceil((double)log2((double)param->levelOutput))+param->numBitInput+param->numColPerSynapse+1+ceil((double)log2((double)peSize_x/(double)desiredIMCsize_x)))*numPE, 
 								1, param->unitLengthWireResistance, param->clkFreq, param->peBufferType);
+				}
 			} else {
 				outputBuffer->Initialize((param->tileBufferCoreSizeRow*param->tileBufferCoreSizeCol), param->tileBufferCoreSizeCol, 1, param->unitLengthWireResistance, param->clkFreq, param->peBufferType);
 			}
@@ -818,11 +837,13 @@ void TileCalculatePerformance_new(const vector<vector<double> > &newMemory, cons
 						}
 					}
 				}
-				*readLatency /= (speedUpRow*speedUpCol/numPE);   // further speedup in PE level
-				*coreLatencyADC /= (speedUpRow*speedUpCol/numPE);
-				*coreLatencyAccum /= (speedUpRow*speedUpCol/numPE);
+				//cout<<"*readLatency"<<*readLatency<<endl;
+				*readLatency /= (speedUpRow*speedUpCol);   // further speedup in PE level
+				//cout<<"*readLatency"<<*readLatency<<endl;
+				*coreLatencyADC /= (speedUpRow*speedUpCol);
+				*coreLatencyAccum /= (speedUpRow*speedUpCol);
 				//cout<<"\n After duplication we normalize to get *coreLatencyAccum as: "<<(*coreLatencyAccum)<<endl;
-				*coreLatencyOther /= (speedUpRow*speedUpCol/numPE);
+				*coreLatencyOther /= (speedUpRow*speedUpCol);
 
 				// whether go through accumulation?
 				if (ceil((double)weightMatrixRow/(double)peSize_x) > 1) {
@@ -881,8 +902,15 @@ void TileCalculatePerformance_new(const vector<vector<double> > &newMemory, cons
 					*coreEnergyArray += peEnergyArray;
 				}
 			}
-			accumulation->CalculateLatency((int)(numInVector/param->numBitInput)*ceil((double)param->numColMuxed/(double)param->numColPerSynapse), ceil((double)sqrt((double)numPE)), 0);
-			accumulation->CalculatePower((int)(numInVector/param->numBitInput)*ceil((double)param->numColMuxed/(double)param->numColPerSynapse), ceil((double)sqrt((double)numPE)));
+			if(param-> inputdacmode){
+				accumulation->CalculateLatency(ceil((double)param->numColMuxed/(double)param->numColPerSynapse), ceil((double)sqrt((double)numPE)), 0);
+				accumulation->CalculatePower(ceil((double)param->numColMuxed/(double)param->numColPerSynapse), ceil((double)sqrt((double)numPE)));
+			}
+			else{
+				accumulation->CalculateLatency((int)(numInVector/param->numBitInput)*ceil((double)param->numColMuxed/(double)param->numColPerSynapse), ceil((double)sqrt((double)numPE)), 0);
+				accumulation->CalculatePower((int)(numInVector/param->numBitInput)*ceil((double)param->numColMuxed/(double)param->numColPerSynapse), ceil((double)sqrt((double)numPE)));
+			}
+			//cout<<"*readLatency"<<*readLatency<<endl;
 			*readLatency += accumulation->readLatency;
 			*readDynamicEnergy += accumulation->readDynamicEnergy;
 			*coreLatencyAccum += accumulation->readLatency;
@@ -921,9 +949,15 @@ void TileCalculatePerformance_new(const vector<vector<double> > &newMemory, cons
 			}
 		} else {
 			//Updated as per NeuronSim 1.3
-			numBitToLoadIn = MAX(ceil(weightMatrixCol/param->numColPerSynapse)*(1+accumulation->numAdderBit)*numInVector/param->numBitInput, 0);
+			if(param->inputdacmode){
+				numBitToLoadIn = MAX(ceil(weightMatrixCol/param->numColPerSynapse)*(1+accumulation->numAdderBit), 0);
+				outputBuffer->CalculateLatency(outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width, outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width);
+				outputBuffer->CalculatePower(outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width, outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width);				
+			}
+			else{numBitToLoadIn = MAX(ceil(weightMatrixCol/param->numColPerSynapse)*(1+accumulation->numAdderBit)*numInVector/param->numBitInput, 0);
 			outputBuffer->CalculateLatency(outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width, outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width);
 			outputBuffer->CalculatePower(outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width, outputBuffer->interface_width, numBitToLoadIn/outputBuffer->interface_width);
+			}
 			//outputBuffer->CalculateLatency(weightMatrixCol*(1+accumulation->numAdderBit), numInVector/param->numBitInput, weightMatrixCol*(1+accumulation->numAdderBit), numInVector/param->numBitInput);
 			//outputBuffer->CalculatePower(weightMatrixCol*(1+accumulation->numAdderBit), numInVector/param->numBitInput, weightMatrixCol*(1+accumulation->numAdderBit), numInVector/param->numBitInput);
 		}
@@ -940,7 +974,7 @@ void TileCalculatePerformance_new(const vector<vector<double> > &newMemory, cons
 		outputBuffer->writeLatency /= MIN(numOutBufferCore, ceil(hTree->busWidth/outputBuffer->interface_width));																							   
 		//inputBuffer->CalculateLatency(weightMatrixRow, numInVector/param->numBitInput, weightMatrixRow, numInVector/param->numBitInput);
 		//inputBuffer->CalculatePower(weightMatrixRow, numInVector/param->numBitInput, weightMatrixRow, numInVector/param->numBitInput);
-		//cout<<" outputBuffer->readLatency"<<outputBuffer->readLatency<<endl;
+		//cout<<"*readLatency_Tile"<<*readLatency<<endl;
 		*readLatency += inputBuffer->readLatency + inputBuffer->writeLatency;
 		*readDynamicEnergy += inputBuffer->readDynamicEnergy + inputBuffer->writeDynamicEnergy;
 		*readLatency += outputBuffer->readLatency + outputBuffer->writeLatency;
@@ -963,6 +997,7 @@ void TileCalculatePerformance_new(const vector<vector<double> > &newMemory, cons
 		//cout<<" outputBuffer->writeDynamicEnergy"<<outputBuffer->writeDynamicEnergy<<endl;
 		//cout<<"bufferDynamicEnergy_Tile"<<*bufferDynamicEnergy<<endl;
 		//cout<<"bufferLatency"<<*bufferLatency<<endl;
+		//cout<<"coreLatencyOther_Tile"<<*coreLatencyOther<<endl;
 		*bufferLatency += inputBuffer->readLatency + outputBuffer->readLatency + inputBuffer->writeLatency + outputBuffer->writeLatency;
 		*icLatency += hTree->readLatency;
 		*bufferDynamicEnergy += inputBuffer->readDynamicEnergy + outputBuffer->readDynamicEnergy + inputBuffer->writeDynamicEnergy + outputBuffer->writeDynamicEnergy;		

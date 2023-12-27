@@ -13,6 +13,7 @@ from Interconnect.nop_estimation import nop_interconnect_estimation
 from Interconnect.nop_estimation_big_little import nop_interconnect_estimation_big_little
 #from NoP_hardware import *
 from proj_gokul import Calc_values
+from proj_gokul import print_file
 import math
 import tensorflow as tf
 import tensorflow_datasets as tfds
@@ -209,7 +210,7 @@ def dec2bin(x,n):
     return out_arr,scale_list
 
 
-def main():
+def main(EDP):
     
     IN = []
     W = []
@@ -356,8 +357,8 @@ def main():
 
     end = time.time()
     #print("The SIAM sim time is:", (end - start))
-    
-    Calc_values()
+    EDP= Calc_values(EDP)
+    return EDP
 
     
 if __name__ == "__main__":

@@ -90,6 +90,8 @@ Param::Param() {
 
 	novelMapping = false;       // false: conventional mapping. We will add additional mapping strategies in coming versions.
 	currentMode = true; 
+	inputdacmode=true; 			//true:dac
+								//false: switch matrix
 	numRowSubArray = 64;       // # of rows in single subArray
 	numColSubArray = 64;       // # of columns in single subArray
 
@@ -102,8 +104,8 @@ Param::Param() {
 	numRowSubArray_big = 64;       // # of rows in single subArray for big core
 	numColSubArray_big = 64;       // # of columns in single subArray for big core
 
-	numRowSubArray_type1 = 256;       // # of rows in single subArray for different type of chiplet
-	numColSubArray_type1 = 256;       // # of columns in single subArray for different type of chiplet
+	numRowSubArray_type1 = 1024;       // # of rows in single subArray for different type of chiplet
+	numColSubArray_type1 = 1024;       // # of columns in single subArray for different type of chiplet
 
 	numRowSubArray_type2 = 64;       // # of rows in single subArray for different type of chiplet
 	numColSubArray_type2 = 64;       // # of columns in single subArray for different type of chiplet
@@ -144,7 +146,7 @@ Param::Param() {
 	size_chiplet_mid =36;
 	size_chiplet_big = 36; 			// Gives the number of Tiles in the each chiplet. We assume all the chiplets are same size. Each tile has 16 crossbar arrays
 
-	size_chiplet_1 = 4; 			// Gives the number of Tiles in the each chiplet. We assume all the chiplets are same size. Each tile has 16 crossbar arrays
+	size_chiplet_1 = 2; 			// Gives the number of Tiles in the each chiplet. We assume all the chiplets are same size. Each tile has 16 crossbar arrays
 	
 	size_chiplet_2 = 36;
 	size_chiplet_3 = 36; 			// Gives the number of Tiles in the each chiplet. We assume all the chiplets are same size. Each tile has 16 crossbar arrays
@@ -186,7 +188,7 @@ Param::Param() {
 	globalBusDelayTolerance = 0.1;
 	localBusDelayTolerance = 0.1;
 	treeFoldedRatio = 4;
-	maxGlobalBusWidth = 1024;    		// the max buswidth allowed on top-level
+	maxGlobalBusWidth = 65536 ;    		// the max buswidth allowed on top-level
 	clkFreq = 1e9;               // Clock frequency
 	featuresize = 40e-9;         // Wire width for subArray simulation
 	temp = 301;                  // Temperature (K)
@@ -216,7 +218,7 @@ Param::Param() {
 	numlut = 32;                 // # of LUT (not relevant for IMEC)
 	numColMuxed = 8;             // How many columns share 1 read circuit (for neuro mode with analog RRAM) or 1 S/A (for memory mode or neuro mode with digital RRAM)
 	numWriteColMuxed = 4;        // How many columns share 1 write column decoder driver (for memory or neuro mode with digital RRAM)
-	levelOutput = 64;            // # of levels of the multilevelSenseAmp output or ADC
+	levelOutput = 256;            // # of levels of the multilevelSenseAmp output or ADC
 	cellBit =4;                 // precision of memory device
 	
 	if (memcelltype == 1) {

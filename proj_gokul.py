@@ -7,8 +7,9 @@
 ######################################################
 import numpy as np                                     # needed for arrays
 import pandas as pd                                    # data frame
+import datetime
 
-def Calc_values():
+def Calc_values(EDP):
     total_area=0
     total_readenergy=0
     total_leakage = 0
@@ -178,6 +179,24 @@ def Calc_values():
     #print ('Total NoP driver energy: ', total_nop_driver_energy, 'pJ')
     print ('Total energy: ', total_readenergy+total_noc_power/chiplet_num*total_noc_latency*1e9+total_leakage, 'pJ')
     print('***************************************************** \n')
+    total_energy = (total_readenergy+total_noc_power/chiplet_num*total_noc_latency*1e9+total_leakage)*1e-12
+    total_latency =  (total_noc_latency*1e9+total_readlatency)*1e-9
+    EDP.append(total_energy*total_latency)
+
+    return EDP
+
+def print_file(val):
+    # Get the current date and time
+	current_time = datetime.datetime.now()
+
+	# Create a formatted string for the timestamp
+	timestamp_str = current_time.strftime("%Y-%m-%d_%H-%M-%S")
+
+	# Combine the timestamp with a file extension or any other desired format
+	file_name = f"./Outputs/output_{timestamp_str}.csv"
+	#import pdb;pdb.set_trace()
+	x_df=pd.DataFrame(val)
+	x_df.to_csv(file_name,  index=False, header=False)
 
 if __name__ == "__main__":
     Calc_values()

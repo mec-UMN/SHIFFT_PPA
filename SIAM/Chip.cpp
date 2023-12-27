@@ -316,8 +316,9 @@ vector<vector<double> > ChipFloorPlan(bool findNumTile, bool findUtilization, bo
 			//}
 			//cout << "CE Size used is" << *desiredPESizeCM_x << "x" << *desiredPESizeCM_y << endl;
 			//cout<<"The PE utilization is :"<<thisUtilization<<"\n"<<endl;
-
+			//cout<<"desiredTileSizeCM_x"<<*desiredTileSizeCM_x<<endl;
 			peDup = PEDesign_new(false, (*desiredPESizeCM_x), (*desiredPESizeCM_y), (*desiredTileSizeCM_x), (*desiredTileSizeCM_y), (*desiredNumTileCM), markNM, netStructure, numRowPerSynapse, numColPerSynapse);
+			//cout<<"desiredPESizeCM_x"<<*desiredPESizeCM_x<<endl;
 			/*** SubArray Duplication ***/
 			subArrayDup = SubArrayDup_new((*desiredPESizeCM_x), (*desiredPESizeCM_y), 0, markNM, netStructure, numRowPerSynapse, numColPerSynapse);
 			/*** Design SubArray ***/
@@ -378,6 +379,7 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 	TileInitialize_new(inputParameter, tech, cell, _numPE, desiredPESizeCM_x, desiredPESizeCM_y, desiredIMCsize_x, desiredIMCsize_y);
 	// find max layer and define the global buffer: enough to hold the max layer inputs
 	double maxLayerInput = 0;
+	double maxLayerOutput = 0;
 	// find max # tiles needed to be added at the same time
 	double maxTileAdded = 0;
 	cout<<"The size of the netstructure inside chip initialize is: "<<netStructure.size()<<endl;
@@ -386,7 +388,10 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 		if (input > maxLayerInput) {
 			maxLayerInput = input;
 		}
-
+		double output = netStructure[i][5];  // IFM_Row * IFM_Column * IFM_depth
+		if (output > maxLayerOutput) {
+			maxLayerOutput = output;
+		}
 		if (markNM[i] == 0) {
 			//globalBusWidth += (desiredTileSizeCM_y)/param->numColMuxed;
 			globalBusWidth=param->maxGlobalBusWidth;
@@ -404,21 +409,6 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 		globalBusWidth /= 2;
 	}
 	//int pass_to_maxpool = max(desiredTileSizeCM_x, desiredTileSizeCM_y);
-	//Updated as per NeuroSIM V3
-	// define bufferSize for inference operation
-	int bufferSize = param->numBitInput*maxLayerInput;										 
-	//globalBuffer->Initialize(param->numBitInput*maxLayerInput, globalBusWidth, 1, param->unitLengthWireResistance, param->clkFreq, param->globalBufferType);
-	numBufferCore = ceil((double) bufferSize/((double) param->globalBufferCoreSizeRow*(double) param->globalBufferCoreSizeCol));
-	//cout<<"numBufferCore"<<numBufferCore<<endl;
-	//cout<<"globalBusWidth"<<globalBusWidth<<endl;
-	//numBufferCore = ceil(1.5*numBufferCore);
-	globalBuffer->Initialize((param->globalBufferCoreSizeRow*param->globalBufferCoreSizeCol), param->globalBufferCoreSizeCol, 1, param->unitLengthWireResistance, param->clkFreq, param->globalBufferType);
-	
-	//globalBuffer->Initialize(maxLayerInput*param->numBitInput, ceil((double)sqrt(param->numBitInput*maxLayerInput)), 1, param->unitLengthWireResistance, param->clkFreq, param->globalBufferType);
-	//maxPool->Initialize(param->numBitInput, 2*2, (pass_to_maxpool));
-	cout<<"numTileRow"<<numTileRow<<endl;
-	GhTree->Initialize((numTileRow), (numTileCol), param->globalBusDelayTolerance, globalBusWidth);
-
 	//activation inside Tile or outside?
 	if (param->chipActivation) {
 		if (param->novelMapping) {
@@ -444,8 +434,17 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 			int maxAddFromSubArray = (int) ceil((double)(desiredPESizeCM_x)/(double)desiredPESizeCM_x);   // from subArray to ProcessingUnit
 			maxAddFromSubArray *= (int) ceil((double)(desiredTileSizeCM_x)/(double)(desiredPESizeCM_x));    // from ProcessingUnit to Tile
 			if (param->parallelRead) {
+				if(param->inputdacmode){
+					//Gaccumulation->Initialize((int) maxTileAdded, ceil((double)log2((double)param->levelOutput))+param->numColPerSynapse+1+ceil((double)log2((double)maxAddFromSubArray)),
+					//					ceil((double)(desiredTileSizeCM_y)/(double)param->numColMuxed));
+					Gaccumulation->Initialize((int) maxTileAdded, ceil((double)log2((double)param->levelOutput))+param->numColPerSynapse+1+ceil((double)log2((double)maxAddFromSubArray)),
+										ceil((double)(maxLayerOutput/(maxLayerInput*2)*desiredTileSizeCM_y)/(double)param->numColMuxed));
+				
+				}
+				else{
 				Gaccumulation->Initialize((int) maxTileAdded, ceil((double)log2((double)param->levelOutput))+param->numColPerSynapse+param->numBitInput+1+ceil((double)log2((double)maxAddFromSubArray)),
 										ceil((double)(desiredTileSizeCM_y)/(double)param->numColMuxed));
+				}
 			} else {
 				Gaccumulation->Initialize((int) maxTileAdded, ceil((double)log2((double)desiredPESizeCM_x)+(double)param->cellBit-1)+param->numColPerSynapse+param->numBitInput+1+ceil((double)log2((double)maxAddFromSubArray)),
 										ceil((double)(desiredTileSizeCM_y)/(double)param->numColMuxed));
@@ -477,6 +476,22 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 			}
 		}
 	}
+	//Updated as per NeuroSIM V3
+	// define bufferSize for inference operation
+	int bufferSize = MAX(Gaccumulation->numAdderBit*maxLayerOutput,param->numBitInput*maxLayerInput);										 
+	//globalBuffer->Initialize(param->numBitInput*maxLayerInput, globalBusWidth, 1, param->unitLengthWireResistance, param->clkFreq, param->globalBufferType);
+	numBufferCore = ceil((double) bufferSize/((double) param->globalBufferCoreSizeRow*(double) param->globalBufferCoreSizeCol));
+	//cout<<"numBufferCore"<<numBufferCore<<endl;
+	//cout<<"globalBusWidth"<<globalBusWidth<<endl;
+	//numBufferCore = ceil(1.5*numBufferCore);
+	globalBuffer->Initialize((param->globalBufferCoreSizeRow*param->globalBufferCoreSizeCol), param->globalBufferCoreSizeCol, 1, param->unitLengthWireResistance, param->clkFreq, param->globalBufferType);
+
+
+	//globalBuffer->Initialize(maxLayerInput*param->numBitInput, ceil((double)sqrt(param->numBitInput*maxLayerInput)), 1, param->unitLengthWireResistance, param->clkFreq, param->globalBufferType);
+	//maxPool->Initialize(param->numBitInput, 2*2, (pass_to_maxpool));
+	//cout<<"numTileRow"<<numTileRow<<endl;
+	GhTree->Initialize((numTileRow), (numTileCol), param->globalBusDelayTolerance, globalBusWidth);
+
 }
 
 
@@ -862,7 +877,7 @@ double ChipCalculatePerformance(MemCell& cell, int layerNumber, const string &ne
 
 
 				//cout<<"\n num is:"<<(num)<<endl;
-				TileCalculatePerformance_new(tileMemory, tileMemory, tileInput, markNM[l], ceil((double)desiredTileSizeCM_x/(double)desiredPESizeCM_x) + ceil((double)desiredTileSizeCM_y/(double)desiredPESizeCM_y)-2, desiredPESizeCM_x, desiredPESizeCM_y, speedUpEachLayer[0][l], speedUpEachLayer[1][l],
+				TileCalculatePerformance_new(tileMemory, tileMemory, tileInput, markNM[l], ceil((double)desiredTileSizeCM_x/(double)desiredPESizeCM_x) * ceil((double)desiredTileSizeCM_y/(double)desiredPESizeCM_y), desiredPESizeCM_x, desiredPESizeCM_y, speedUpEachLayer[0][l], speedUpEachLayer[1][l],
 									numRowMatrix, numColMatrix, num, cell, &tileReadLatency, &tileReadDynamicEnergy, &tileLeakage,
 									&tilebufferLatency, &tilebufferDynamicEnergy, &tileicLatency, &tileicDynamicEnergy,
 									&tileLatencyADC, &tileLatencyAccum, &tileLatencyOther, &tileLatencyArray, &tileEnergyADC, &tileEnergyAccum, &tileEnergyOther, &tileEnergyArray);
@@ -882,6 +897,8 @@ double ChipCalculatePerformance(MemCell& cell, int layerNumber, const string &ne
 				*coreLatencyADC = MAX(tileLatencyADC, (*coreLatencyADC));
 
 				//cout<<"\n The Tile latency accum is: "<<tileLatencyAccum<<endl;
+				//cout<<coreLatencyOther<<coreLatencyOther<<endl;
+				//cout<<tileLatencyOther<<tileLatencyOther<<endl;
 				*coreLatencyAccum = MAX(tileLatencyAccum, (*coreLatencyAccum));
 				*coreLatencyOther = MAX(tileLatencyOther, (*coreLatencyOther));
 				*coreLatencyOther_only = MAX(tileLatencyOther, (*coreLatencyOther_only));
@@ -983,12 +1000,12 @@ double ChipCalculatePerformance(MemCell& cell, int layerNumber, const string &ne
 			}
 		}
 
-		cout<<"times"<<times<<endl;
+		//cout<<"times"<<times<<endl;
 		//if (numTileEachLayer[0][l] > 1) {
 			//Gaccumulation->CalculateLatency(numTileEachLayer[1][l]*param->numColMuxed*(numTileEachLayer[0][l+1]*numTileEachLayer[1][l+1]), numTileEachLayer[0][l], 0);
 			//Gaccumulation->CalculatePower(numTileEachLayer[1][l]*param->numColMuxed*(numTileEachLayer[0][l+1]*numTileEachLayer[1][l+1]), numTileEachLayer[0][l]);
-			Gaccumulation->CalculateLatency(param->numColMuxed/param->numColPerSynapse,netStructure[l][5]/desiredTileSizeCM_x,0);
-			Gaccumulation->CalculatePower(param->numColMuxed/param->numColPerSynapse,netStructure[l][5]/desiredTileSizeCM_x);
+			Gaccumulation->CalculateLatency((double)param->numColMuxed/param->numColPerSynapse,ceil(2*(netStructure[l][1]/desiredTileSizeCM_x)),0);
+			Gaccumulation->CalculatePower(param->numColMuxed/param->numColPerSynapse,ceil(2*(netStructure[l][1]/desiredTileSizeCM_x)));
 			*readLatency += Gaccumulation->readLatency/times;
 			*readDynamicEnergy += Gaccumulation->readDynamicEnergy/times;
 			*coreLatencyAccum += Gaccumulation->readLatency/times;
@@ -1034,17 +1051,29 @@ double ChipCalculatePerformance(MemCell& cell, int layerNumber, const string &ne
 		cout<<"The other core energy for the tile is "<<tileEnergyOther*1e12<< "pJ" << endl;
 */
 		//TODO
-		int test, test_1;
+		int test_in, test_out, test_1;
 		test_1 = (netStructure[l][0]-netStructure[l][3]+1)*(netStructure[l][1]-netStructure[l][4]+1);
-		test = MAX(test_1, 1)*param->numBitInput;
+		test_in = MAX(test_1, 1)*param->numBitInput;
+		test_out = MAX(test_1, 1)*Gaccumulation->numAdderBit;
 
-		double numBitToLoadOut = weightMatrixRow*test;
-		double numBitToLoadIn = ceil(weightMatrixCol/param->numColPerSynapse)*test;
+		double numBitToLoadOut = desiredTileSizeCM_x *test_in* numTileEachLayer[0][l]*numTileEachLayer[1][l];
+		//double numBitToLoadIn = ceil(weightMatrixCol/param->numColPerSynapse)*test_out;
+		double numBitToLoadIn = ceil(desiredTileSizeCM_x*ceil(numTileEachLayer[0][l]*numTileEachLayer[1][l]/param->numColPerSynapse))*test_out;
 		//GhTree->CalculateLatency(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth,
 								//(weightMatrixRow+weightMatrixCol)*(test)/GhTree->busWidth);
-		//GhTree->CalculatePower(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth, GhTree->busWidth,
+		//GhTree->CalculatePower(0, 0, tileLocaEachLayer[0][l], tileLocaEachLaer[1][l], CMTileheight, CMTilewidth, GhTree->busWidth,
 								//((weightMatrixRow)/desiredPESizeCM_x+(weightMatrixCol)/(desiredPESizeCM_y))*(test)/GhTree->busWidth);
-		GhTree->CalculateLatency(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth, ceil((numBitToLoadOut+numBitToLoadIn)/GhTree->busWidth));
+		cout<<"tileLocaEachLayer[0][l]"<<tileLocaEachLayer[0][l]<<endl;
+		cout<<"tileLocaEachLayer[1][l]"<<tileLocaEachLayer[1][l]<<endl;
+		cout<<"numTileEachLayer[0][l]"<<numTileEachLayer[1][l]<<endl;
+        cout<<"CMTileheight"<<CMTileheight<<endl;
+        cout<<"CMTilewidth"<<CMTilewidth<<endl;
+        cout<<"numBitToLoadOut"<<numBitToLoadOut<<endl;
+        cout<<"numBitToLoadIn"<<numBitToLoadIn<<endl;
+		cout<<"weightMatrixRow"<<weightMatrixRow<<endl;
+		cout<<"weightMatrixCol"<<weightMatrixCol<<endl;
+		cout<<"desiredTileSize_x"<<desiredTileSizeCM_x<<endl;
+		GhTree->CalculateLatency(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth, ceil((numBitToLoadOut+numBitToLoadIn+numBitToLoadIn)/GhTree->busWidth));
 		GhTree->CalculatePower(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth, GhTree->busWidth, 
 							ceil((numBitToLoadOut+numBitToLoadIn)/GhTree->busWidth));
 		//globalBuffer->CalculateLatency(netStructure[l][5]*(1+Gaccumulation->numAdderBit), (test),

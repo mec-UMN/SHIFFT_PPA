@@ -755,7 +755,7 @@ int main(int argc, char * argv[]) {
 				myperipherial.open ("./to_interconnect/chip_peripherial.csv", std::ios_base::app);
 			}
 			int no_peripherials_stages;
-			cout<<"netStructure[i][5]"<<netStructure[i][5]<<endl;
+			//cout<<"netStructure[i][5]"<<netStructure[i][5]<<endl;
 			if(netStructure[i][5]>desiredTileSizeCM_x){
 				myperipherial<<"AdderTree,"<<1<<",Buffer,"<<1<<endl;
 			}

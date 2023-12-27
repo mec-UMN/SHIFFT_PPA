@@ -51,7 +51,7 @@ public:
 
 	int relaxArrayCellHeight, relaxArrayCellWidth, algoWeightMax, algoWeightMin, pool_stride;
 
-	bool globalBufferType, tileBufferType, peBufferType, chipActivation, reLu, novelMapping, mode, chiplet_structure, fixed_cnt_chiplet, currentMode;
+	bool globalBufferType, tileBufferType, peBufferType, chipActivation, reLu, novelMapping, mode, chiplet_structure, fixed_cnt_chiplet, currentMode, inputdacmode;
 
 	double clkFreq, featuresize, readNoise, resistanceOn, resistanceOff, maxConductance, minConductance;
 	int temp, technode, wireWidth, multipleCells, layer_parallel;
