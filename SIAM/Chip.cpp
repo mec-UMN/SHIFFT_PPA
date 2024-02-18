@@ -388,7 +388,9 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 		if (input > maxLayerInput) {
 			maxLayerInput = input;
 		}
-		double output = netStructure[i][5];  // IFM_Row * IFM_Column * IFM_depth
+		double numaddertreestage = log2(ceil(2*(netStructure[i][1]/desiredTileSizeCM_x)));
+		double Scalability_factor=(pow(2,numaddertreestage)-1)/(pow(2,numaddertreestage-1));
+		double output = netStructure[i][5]*Scalability_factor;  // IFM_Row * IFM_Column * IFM_depth
 		if (output > maxLayerOutput) {
 			maxLayerOutput = output;
 		}
@@ -1056,16 +1058,18 @@ double ChipCalculatePerformance(MemCell& cell, int layerNumber, const string &ne
 		test_in = MAX(test_1, 1)*param->numBitInput;
 		test_out = MAX(test_1, 1)*Gaccumulation->numAdderBit;
 
-		double numBitToLoadOut = desiredTileSizeCM_x *test_in* numTileEachLayer[0][l]*numTileEachLayer[1][l];
+		double numBitToLoadOut = min(desiredTileSizeCM_x,netStructure[l][1])*test_in* numTileEachLayer[0][l]*numTileEachLayer[1][l];
 		//double numBitToLoadIn = ceil(weightMatrixCol/param->numColPerSynapse)*test_out;
-		double numBitToLoadIn = ceil(desiredTileSizeCM_x*ceil(numTileEachLayer[0][l]*numTileEachLayer[1][l]/param->numColPerSynapse))*test_out;
+		double numaddertreestage = log2(ceil(2*(netStructure[l][1]/desiredTileSizeCM_x)));
+		double Scalability_factor=(pow(2,numaddertreestage)-1)/(pow(2,numaddertreestage-1));
+		double numBitToLoadIn = desiredTileSizeCM_x<netStructure[l][5]?ceil(desiredTileSizeCM_x*ceil(numTileEachLayer[0][l]*numTileEachLayer[1][l]/param->numColPerSynapse))*test_out*Scalability_factor:netStructure[l][5]*test_out;
 		//GhTree->CalculateLatency(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth,
 								//(weightMatrixRow+weightMatrixCol)*(test)/GhTree->busWidth);
 		//GhTree->CalculatePower(0, 0, tileLocaEachLayer[0][l], tileLocaEachLaer[1][l], CMTileheight, CMTilewidth, GhTree->busWidth,
 								//((weightMatrixRow)/desiredPESizeCM_x+(weightMatrixCol)/(desiredPESizeCM_y))*(test)/GhTree->busWidth);
 		cout<<"tileLocaEachLayer[0][l]"<<tileLocaEachLayer[0][l]<<endl;
 		cout<<"tileLocaEachLayer[1][l]"<<tileLocaEachLayer[1][l]<<endl;
-		cout<<"numTileEachLayer[0][l]"<<numTileEachLayer[1][l]<<endl;
+		cout<<"numTileEachLayer[0][l]"<<numTileEachLayer[0][l]<<endl;
         cout<<"CMTileheight"<<CMTileheight<<endl;
         cout<<"CMTilewidth"<<CMTilewidth<<endl;
         cout<<"numBitToLoadOut"<<numBitToLoadOut<<endl;

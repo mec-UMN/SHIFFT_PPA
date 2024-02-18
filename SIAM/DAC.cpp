@@ -42,8 +42,10 @@
 #include "constant.h"
 #include "formula.h"
 #include "DAC.h"
+#include "Param.h"
 
 using namespace std;
+extern Param *param;
 
 DAC::DAC(const InputParameter& _inputParameter, const Technology& _tech, const MemCell& _cell): inputParameter(_inputParameter), tech(_tech), cell(_cell), FunctionUnit() {
 	initialized = false;
@@ -64,7 +66,9 @@ void DAC::CalculateArea(double _newHeight, double _newWidth, AreaModify _option)
         height=70e-6*numRow*3/7;
         width=22e-6;
     }
-    area = height * width;
+    float factor = pow((float)param->technode/32,2);
+    //cout<<"factor_ar"<<factor<<endl;
+    area = height * width*factor;
     // Modify layout
     newHeight = _newHeight;
     newWidth = _newWidth;
@@ -87,8 +91,9 @@ void DAC::CalculateLatency(double _rampInput, double _capLoad, double _resLoad, 
 		capLoad = _capLoad;
 		resLoad = _resLoad;
 		readLatency = 0;
-
-		readLatency = resLoad * capLoad*(2.65+2.48+1.86+1.16+0.47);
+        float factor = (float)param->technode/32;
+        //cout<<"factor"<<factor<<endl;
+		readLatency = resLoad * capLoad*(2.65+2.48+1.86+1.16+0.47)*factor;
 		readLatency *= numRead;
 	}
 }
@@ -97,7 +102,9 @@ void DAC::CalculatePower(double numRead) {
 	if (!initialized) {
 		cout << "[DAC] Error: Require initialization first!" << endl;
 	} else {
-        readDynamicEnergy=numRow*2.10e-4*1/clkFreq;
+        float factor = pow((float)param->readVoltage/0.9,2);
+        //cout<<"factor"<<factor<<endl;
+        readDynamicEnergy=numRow*2.10e-4*1*factor/clkFreq;
         readDynamicEnergy *= numRead;
     }    
 }

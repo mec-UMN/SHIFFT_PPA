@@ -23,7 +23,7 @@ CurrentSenseAmp.o: CurrentSenseAmp.cpp constant.h formula.h Technology.h \
  typedef.h Param.h CurrentSenseAmp.h FunctionUnit.h InputParameter.h \
  MemCell.h
 DAC.o: DAC.cpp constant.h formula.h Technology.h typedef.h DAC.h \
- InputParameter.h MemCell.h FunctionUnit.h
+ InputParameter.h MemCell.h FunctionUnit.h Param.h
 DecoderDriver.o: DecoderDriver.cpp constant.h formula.h Technology.h \
  typedef.h DecoderDriver.h InputParameter.h MemCell.h FunctionUnit.h
 DeMux.o: DeMux.cpp constant.h formula.h Technology.h typedef.h DeMux.h \

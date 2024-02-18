@@ -32,28 +32,68 @@ print("Files moved successfully.")
 
 adc_bits=2**np.array([8, 7, 6, 5, 4, 3])
 adc_bits=adc_bits.tolist()
-"""
-xbar_size_1 = [1024, 512, 256, 128, 64, 64]
-xbar_size_1 = [4096, 2048, 1024, 512, 256, 128]
-size_chiplet_1 = [1, 2, 4, 16, 64, 64]
-
-xbar_size_1 = [256, 128, 64]
-size_chiplet_1 = [1, 2, 4]
-"""
+count = len(adc_bits)
+mode = 1
 # Parameter name to be replaced
 #parameter_name = "levelOutput"
-parameters_to_update = {
-    "levelOutput": adc_bits
+if mode == 1:
+    xbar_size_1 = [256, 128, 64]
+    xbar_size_2 = [256, 128, 64]
+    size_chiplet_1 = [1, 2, 4]
+    count =3
+elif mode == 2:
+    xbar_size_1 = [512, 256, 128]
+    xbar_size_2 = [512, 256, 128]
+    size_chiplet_1 = [1, 2, 4]
+    count =3
+elif mode == 3:
+    xbar_size_1 = [1024, 512, 256, 128, 64]
+    xbar_size_2 = [1024, 512, 256, 128, 64]
+    size_chiplet_1 = [1, 2, 4, 16, 64]
+    count =5
+elif mode == 4:
+    xbar_size_1 = [2048, 1024, 512, 256, 128]
+    xbar_size_2 = [2048, 1024, 512, 256, 128]
+    size_chiplet_1 = [1, 2, 4, 16, 64]
+    count =5
+elif mode == 5:
+    xbar_size_1 = [4096, 2048, 1024, 512, 256, 128]
+    xbar_size_2 = [4096, 2048, 1024, 512, 256, 128]
+    size_chiplet_1 = [1, 2, 4, 16, 64, 256]
+elif mode == 6:
+    cellBit = [1, 2, 3, 4]
+
+
+if mode == 0:
+    # Parameter name to be replaced
+    #parameter_name = "levelOutput"
+    parameters_to_update = {
+        "levelOutput": adc_bits
+        #"size_chiplet_1":size_chiplet_1,
+        #"numRowSubArray_type1":xbar_size_1,
+        #"numColSubArray_type1":xbar_size_2,
+    }
+elif mode ==6:
+    parameters_to_update = {
+    #"levelOutput": adc_bits
     #"size_chiplet_1":size_chiplet_1,
     #"numRowSubArray_type1":xbar_size_1,
-    #"numColSubArray_type1":xbar_size_1,
-}
+    #"numColSubArray_type1":xbar_size_2,
+    "cellBit": cellBit,
+    }
+else:
+    parameters_to_update = {
+    #"levelOutput": adc_bits
+    "size_chiplet_1":size_chiplet_1,
+    "numRowSubArray_type1":xbar_size_1,
+    "numColSubArray_type1":xbar_size_2,
+    }
 EDP=[]
 values=[]
 # Path to the C++ file
 cpp_file_path = "./SIAM/Param.cpp"
 
-for i in range (len(adc_bits)):
+for i in range (count):
     for parameter_name, param_newvalue in parameters_to_update.items():
         with fileinput.FileInput(cpp_file_path, inplace=True) as file:
             for line in file:
