@@ -109,7 +109,7 @@ def input_generate(size, k, in_width):
 def write_matrix_weight(weight_matrix, filename):
     #cout = input_matrix.shape[-1]
     #weight_matrix = input_matrix.reshape(-1, cout)
-    import pdb;pdb.set_trace()
+    #import pdb;pdb.set_trace()
     np.savetxt(filename, weight_matrix, delimiter=",", fmt='%10.5f')
 
 def write_matrix_input(input_matrix, length, filename):
@@ -285,7 +285,7 @@ def main(EDP):
         # f.write('gdb --args ./SIAM/main ./SIAM/NetWork.csv '+str(weight_length)+' '+str(input_length)+' ')
             temp_array_W =weight_generate(network_params[layer_idx][3],network_params[layer_idx][5], weight_length)
             W.append(temp_array_W)
-            import pdb;pdb.set_trace()
+            #import pdb;pdb.set_trace()
         for i,(input,weight) in enumerate(zip(IN,W)):
             input_file_name = 'input_layer' + str(i) + '.csv'
             weight_file_name = 'weight_layer' + str(i) + '.csv'
@@ -328,12 +328,12 @@ def main(EDP):
     layer_type=network_params[:,8]
 
 
-    chiplet_breakup_file_name ='/home2/pnalla2/FFT_v2/FFT_SIAM/to_interconnect/chiplet_breakup.csv'
+    chiplet_breakup_file_name ='/home/nalla052/SHIFFT_PPA/to_interconnect/chiplet_breakup.csv'
     data = pd.read_csv(chiplet_breakup_file_name, header=None)
     data = data.to_numpy()
     num_used_chiplet=data
     
-    activation_breakup_file_name ='/home2/pnalla2/FFT_v2/FFT_SIAM/to_interconnect/ip_activation.csv'
+    activation_breakup_file_name ='/home/nalla052/SHIFFT_PPA/to_interconnect/ip_activation.csv'
     data = pd.read_csv(activation_breakup_file_name, header=None)
     activation_per_chiplet = data.to_numpy()
 
@@ -342,15 +342,15 @@ def main(EDP):
     #                                                
 
                          
-    area_file = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/area_chiplet.csv', 'a')
+    area_file = open('/home/nalla052/SHIFFT_PPA/Final_Results/area_chiplet.csv', 'a')
     area_file.write(''+ ',' +'Total NoP Driver area is' + ',' + str(NoP_driver_area) + ',' + 'um^2')
     area_file.close()
 
-    latency_file = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/Latency_chiplet.csv', 'a')
+    latency_file = open('/home/nalla052/SHIFFT_PPA/Final_Results/Latency_chiplet.csv', 'a')
     latency_file.write(''+ ',' +'Total NoP Driver Latency is' + ',' + str(NoP_driver_latency) + ',' + 'ns')
     latency_file.close()
 
-    energy_file = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/Energy_chiplet.csv', 'a')
+    energy_file = open('/home/nalla052/SHIFFT_PPA/Final_Results/Energy_chiplet.csv', 'a')
     energy_file.write(''+ ',' +'Total NoP Driver Energy is' + ',' + str(NoP_driver_energy) + ',' + 'pJ')
     energy_file.close()
     """

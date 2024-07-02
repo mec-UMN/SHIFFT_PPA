@@ -1,1 +1,7 @@
 Chiplet_1,Subarray Area,80530.6,um^2
+Chiplet_1,Chip Area,1.81748e+07,um^2
+Chiplet_1,Total Within Tile Routing Area,769563,um^2
+Chiplet_1,Total ADC (or S/As and precharger for SRAM) Area,430463,um^2
+Chiplet_1,Total Accumulation Area,81094.4,um^2
+Chiplet_1,Total Other Peripheries Area,1.63766e+07,um^2
+Chiplet_1,Total Buffer Area,436615,um^2

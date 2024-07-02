@@ -335,13 +335,13 @@ double MultilevelSenseAmp::GetColumnPower(double columnRes) {
 					Column_Power += 0.1083*exp(-2.321*log10(columnRes));
 				} else if (param->technode == 45) {
 					Column_Power = 7.7017*(levelOutput-1)*1e-6;
-					cout<<"Column_Power"<<Column_Power<<endl;
+					//cout<<"Column_Power"<<Column_Power<<endl;
 					Column_Power += 0.0754*exp(-2.296*log10(columnRes));
 				} else if (param->technode == 32){  
 					Column_Power = 3.9648*(levelOutput-1)*1e-6;
-					cout<<"Column_Power"<<Column_Power<<endl;
+					//cout<<"Column_Power"<<Column_Power<<endl;
 					Column_Power += 0.079*exp(-2.313*log10(columnRes));
-					cout<<"Column_Power"<<Column_Power<<endl;
+					//cout<<"Column_Power"<<Column_Power<<endl;
 				} else if (param->technode == 22){   
 					Column_Power = 1.8939*(levelOutput-1)*1e-6;
 					Column_Power += 0.073*exp(-2.311*log10(columnRes));

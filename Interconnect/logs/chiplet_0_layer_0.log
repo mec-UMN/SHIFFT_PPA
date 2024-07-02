@@ -1,6 +1,6 @@
 ----------------------------------------------------------
 Initialized.
-BEGIN Configuration File: /home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/configs/chiplet_0_mesh_config
+BEGIN Configuration File: /home/nalla052/SHIFFT_PPA/Interconnect/logs/configs/chiplet_0_mesh_config
 // $Id$
 
 // Copyright (c) 2007-2015, Trustees of The Leland Stanford Junior University
@@ -87,7 +87,7 @@ channel_width = 32;
 //watch_file = watch_file.txt;
 //watch_out = watch_out.txt;
 
-END Configuration File: /home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/configs/chiplet_0_mesh_config
+END Configuration File: /home/nalla052/SHIFFT_PPA/Interconnect/logs/configs/chiplet_0_mesh_config
 Trace is finished in 43 cycles
 Class 0:
 Packet latency average = 14.3077

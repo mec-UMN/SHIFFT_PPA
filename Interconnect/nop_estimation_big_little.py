@@ -66,10 +66,10 @@ def nop_interconnect_estimation_big_little(quantization_bit, bus_width_big, bus_
     print('Starting to simulate the NoP trace')
     
     trace_directory_name = str(type) + '_' + str(num_chiplets) + '_cnt_size_' + str(chiplet_size) + '_scale_' + str(scale) + '_bus_width_' + str(bus_width_big)
-    trace_directory_full_path = '/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/' + netname + '_NoP_traces' + '/' + trace_directory_name
+    trace_directory_full_path = '/home/nalla052/SHIFFT_PPA/Interconnect/' + netname + '_NoP_traces' + '/' + trace_directory_name
     
     results_directory_name = 'results_' + trace_directory_name
-    results_directory_full_path = '/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/NoP_Results_' + 'results_' + netname + '/' + results_directory_name
+    results_directory_full_path = '/home/nalla052/SHIFFT_PPA/Final_Results/NoP_Results_' + 'results_' + netname + '/' + results_directory_name
     
     os.system('pwd')
     

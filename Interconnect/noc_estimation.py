@@ -31,17 +31,17 @@ def interconnect_estimation(quantization_bit, bus_width, netname, xbar_size, chi
 
 
     trace_directory_name = type + str(num_chiplets) + '_cnt_size_' + str(chiplet_size) + '_scale_' + str(scale) + '/'
-    trace_directory_full_path = '/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/' + netname + '_NoC_traces' + '/' + trace_directory_name
+    trace_directory_full_path = '/home/nalla052/SHIFFT_PPA/Interconnect/' + netname + '_NoC_traces' + '/' + trace_directory_name
     
     results_directory_name = trace_directory_name
-    results_directory_full_path = '/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/NoC_Results_' + netname + '/' + results_directory_name
+    results_directory_full_path = '/home/nalla052/SHIFFT_PPA/Final_Results/NoC_Results_' + netname + '/' + results_directory_name
                 
     run_booksim_noc(trace_directory_full_path)
     if (not os.path.exists(results_directory_full_path)):
     	os.makedirs(results_directory_full_path)
     
     
-    os.system('mv /home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/ ' + results_directory_full_path)
+    os.system('mv /home/nalla052/SHIFFT_PPA/Interconnect/logs/ ' + results_directory_full_path)
 
 
 # interconnect_estimation(quantization_bit, bus_width, netname, xbar_size, chiplet_size, num_chiplets, type, scale)

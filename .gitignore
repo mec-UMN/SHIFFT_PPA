@@ -2,3 +2,5 @@ dataset/
 __pycache__/
 layer_record/
 Final_Results/
+layer_record/input_layer0.csv
+layer_record/weight_layer0.csv

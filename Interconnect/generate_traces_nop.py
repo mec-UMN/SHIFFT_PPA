@@ -24,7 +24,7 @@ import shutil
 def generate_traces_nop(quantization_bit, bus_width, netname, xbar_size, chiplet_size, num_chiplets, type, scale):
 
     # directory_name = netname + '/' + type + '/' + str(num_chiplets) + '_Chiplets_' + str(chiplet_size) + '_Tiles/to_interconnect'
-    directory_name = '/home2/pnalla2/FFT_v2/FFT_SIAM/to_interconnect'
+    directory_name = '/home/nalla052/SHIFFT_PPA/to_interconnect'
     tiles_csv_file_name = directory_name + '/num_tiles_per_layer_chiplet.csv'
     num_tiles_each_layer = pd.read_csv(tiles_csv_file_name, header=None)
     num_tiles_each_layer = num_tiles_each_layer.to_numpy()
@@ -43,7 +43,7 @@ def generate_traces_nop(quantization_bit, bus_width, netname, xbar_size, chiplet
     
     num_chiplets_this_layer = data[:, 2]
     
-    dir_name = '/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/' +  netname + '_NoP_traces' + '/' + type + '_' + str(num_chiplets) + '_cnt_size_' + str(chiplet_size) + '_scale_' + str(scale) + '_bus_width_' + str(bus_width)
+    dir_name = '/home/nalla052/SHIFFT_PPA/Interconnect/' +  netname + '_NoP_traces' + '/' + type + '_' + str(num_chiplets) + '_cnt_size_' + str(chiplet_size) + '_scale_' + str(scale) + '_bus_width_' + str(bus_width)
             
     
     if (os.path.isdir(dir_name)):

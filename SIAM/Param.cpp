@@ -218,7 +218,7 @@ Param::Param() {
 	numlut = 32;                 // # of LUT (not relevant for IMEC)
 	numColMuxed = 8;             // How many columns share 1 read circuit (for neuro mode with analog RRAM) or 1 S/A (for memory mode or neuro mode with digital RRAM)
 	numWriteColMuxed = 4;        // How many columns share 1 write column decoder driver (for memory or neuro mode with digital RRAM)
-	levelOutput = 128;            // # of levels of the multilevelSenseAmp output or ADC
+	levelOutput = 16;            // # of levels of the multilevelSenseAmp output or ADC
 	cellBit =4;                 // precision of memory device
 	
 	if (memcelltype == 1) {

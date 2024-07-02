@@ -45,14 +45,14 @@ def Calc_values(EDP):
     total_nop_driver_latency=0
 
     dataset = 'Final_Results'
-    chiplet_breakup_file_name ='/home2/pnalla2/FFT_v2/FFT_SIAM/to_interconnect/chiplet_breakup.csv'
+    chiplet_breakup_file_name ='/home/nalla052/SHIFFT_PPA/to_interconnect/chiplet_breakup.csv'
     data = pd.read_csv(chiplet_breakup_file_name, header=None)
     data = data.to_numpy()
     chiplet_num=len(data)
 
-    my_area = pd.read_csv('/home2/pnalla2/FFT_v2/FFT_SIAM/' + dataset + '/area_chiplet.csv',header=None)
-    my_energy = pd.read_csv('/home2/pnalla2/FFT_v2/FFT_SIAM/' + dataset + '/Energy_chiplet.csv',header=None)
-    my_latency = pd.read_csv('/home2/pnalla2/FFT_v2/FFT_SIAM/' + dataset + '/Latency_chiplet.csv',header=None)
+    my_area = pd.read_csv('/home/nalla052/SHIFFT_PPA/' + dataset + '/area_chiplet.csv',header=None)
+    my_energy = pd.read_csv('/home/nalla052/SHIFFT_PPA/' + dataset + '/Energy_chiplet.csv',header=None)
+    my_latency = pd.read_csv('/home/nalla052/SHIFFT_PPA/' + dataset + '/Latency_chiplet.csv',header=None)
     my_string = my_area.iloc[0:,1].values                    # features are in columns 0:59
     my_chiparea = my_area.iloc[0:,2].values
     #print('chip area',my_string)

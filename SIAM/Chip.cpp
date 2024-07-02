@@ -397,7 +397,7 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 		if (markNM[i] == 0) {
 			//globalBusWidth += (desiredTileSizeCM_y)/param->numColMuxed;
 			globalBusWidth=param->maxGlobalBusWidth;
-			cout<<"globalBusWidth"<<globalBusWidth<<endl;
+			//cout<<"globalBusWidth"<<globalBusWidth<<endl;
 		} else {
 			globalBusWidth += (desiredPESizeNM)*ceil((double)sqrt(numPENM))+(desiredPESizeNM)*ceil((double)sqrt(numPENM))/param->numColMuxed;
 		}	

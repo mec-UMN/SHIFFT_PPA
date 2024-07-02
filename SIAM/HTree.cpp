@@ -162,7 +162,7 @@ void HTree::CalculateArea(double unitHeight, double unitWidth, double foldedrati
 		}
 		totalWireLength += min(numCol-x_center, x_center)*unitWidth;
 		area += (busWidth*hInv/foldedratio)*min(numCol-x_center, x_center)*unitWidth;   // main bus: find the way nearest to the boundray as source
-		cout<<busWidth<<"bus"<<endl;
+		//cout<<busWidth<<"bus"<<endl;
 		// Capacitance	
 		// INV
 		CalculateGateCapacitance(INV, 1, widthInvN, widthInvP, hInv, tech, &capInvInput, &capInvOutput);

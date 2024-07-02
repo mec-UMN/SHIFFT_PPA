@@ -31,7 +31,7 @@ def run_booksim_noc(trace_file_dir):
     file_counter = 0
     
     # Create directory to store config files
-    os.system('mkdir -p /home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/configs')
+    os.system('mkdir -p /home/nalla052/SHIFFT_PPA/Interconnect/logs/configs')
     
     for chiplet_idx in range(0, num_chiplets):
     
@@ -68,10 +68,10 @@ def run_booksim_noc(trace_file_dir):
                 mesh_size = int(mesh_sizes_per_chiplet[chiplet_idx])
     
             # Open read file handle of config file
-            fp = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/mesh_config_trace_based', 'r')
+            fp = open('/home/nalla052/SHIFFT_PPA/Interconnect/mesh_config_trace_based', 'r')
     
             # Set path to config file
-            config_file = '/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/configs/chiplet_' + str(chiplet_idx) + '_mesh_config'
+            config_file = '/home/nalla052/SHIFFT_PPA/Interconnect/logs/configs/chiplet_' + str(chiplet_idx) + '_mesh_config'
     
             # Open write file handle for config file
             outfile = open(config_file, 'w')
@@ -96,13 +96,13 @@ def run_booksim_noc(trace_file_dir):
             outfile.close()
     
             # Set path to log file for trace files
-            log_file = '/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/chiplet_' + str(chiplet_idx) + '_layer_' + str(run_id) + '.log'
+            log_file = '/home/nalla052/SHIFFT_PPA/Interconnect/logs/chiplet_' + str(chiplet_idx) + '_layer_' + str(run_id) + '.log'
     
             # Copy trace file
             os.system('cp ' + file + ' ./trace_file.txt')
             print(file)
             # Run Booksim with config file and save log
-            booksim_command = '/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/booksim ' + config_file + ' > ' + log_file
+            booksim_command = '/home/nalla052/SHIFFT_PPA/Interconnect/booksim ' + config_file + ' > ' + log_file
             os.system(booksim_command)
             
             # Grep for packet latency average from log file
@@ -126,7 +126,7 @@ def run_booksim_noc(trace_file_dir):
             total_area = total_area + float(area)
     
         # Open output file handle to write latency
-        outfile_area = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/booksim_area.csv', 'a')
+        outfile_area = open('/home/nalla052/SHIFFT_PPA/Interconnect/logs/booksim_area.csv', 'a')
     
         if file_counter == 0:
             # print('No NoC for this Chiplet.')
@@ -135,23 +135,23 @@ def run_booksim_noc(trace_file_dir):
         else:    
             outfile_area.write(str(total_area/file_counter) + '\n')
             outfile_area.close()
-            area_file = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/area_chiplet.csv', 'a')
+            area_file = open('/home/nalla052/SHIFFT_PPA/Final_Results/area_chiplet.csv', 'a')
             area_file.write(''+ ',' +'Total NoC area is' + ',' + str(total_area/file_counter) +  ',' + 'um^2' + '\n')
             print(''+ ',' +'Total NoC area is' + ',' + str(total_area/file_counter) +  ',' + 'um^2' + '\n')
             area_file.close()
             
         # Open output file handle to write latency
-        outfile_latency = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/booksim_latency.csv', 'a')
+        outfile_latency = open('/home/nalla052/SHIFFT_PPA/Interconnect/logs/booksim_latency.csv', 'a')
         outfile_latency.write(str(total_latency) + '\n')
         outfile_latency.close()
 
-        latency_file = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/Latency_chiplet.csv', 'a')
+        latency_file = open('/home/nalla052/SHIFFT_PPA/Final_Results/Latency_chiplet.csv', 'a')
         latency_file.write(''+ ',' +'Total NoC latency is' + ',' + str(total_latency*1e-9) + ',' + 's' + '\n')
         print(''+ ',' +'Total NoC latency is' + ',' + str(total_latency*1e-9) + ',' + 's' + '\n')
         latency_file.close()
     
         # Open output file handle to write latency
-        outfile_power = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Interconnect/logs/booksim_power.csv', 'a')
+        outfile_power = open('/home/nalla052/SHIFFT_PPA/Interconnect/logs/booksim_power.csv', 'a')
         
         if file_counter == 0:
             outfile_power.write(str(0) + '\n')
@@ -159,7 +159,7 @@ def run_booksim_noc(trace_file_dir):
         else:
             outfile_power.write(str(total_power/file_counter) + '\n')
             outfile_power.close()
-            power_file = open('/home2/pnalla2/FFT_v2/FFT_SIAM/Final_Results/Energy_chiplet.csv', 'a')
+            power_file = open('/home/nalla052/SHIFFT_PPA/Final_Results/Energy_chiplet.csv', 'a')
             power_file.write(''+ ',' +'Total NoC power is' + ',' + str(total_power/file_counter) + ',' + 'mW' + '\n')
             print(''+ ',' +'Total NoC power is' + ',' + str(total_power/file_counter) + ',' + 'mW' + '\n')
             power_file.write(''+ ',' +'Total NoC Energy is' + ',' + str(total_power*total_latency/file_counter) + ',' + 'pJ' + '\n')
