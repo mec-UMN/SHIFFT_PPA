@@ -6,7 +6,14 @@ SHIFFT is a a scalable hybrid in-memory computing FFT accelerator (SHIFFT), a hy
 
 The tool was developed by modifying the SIAM benchmarking tool, that was initially developed for machine learning application, to suit the needs of DFT and proposed SHIFFT architecture.
 ## Usage
-
+Paths are harded-coded into the codes. Please replace them to the required folder. Change the network structure in Network.csv inside SIAM folder to change the FFT Size. for FFT size of 1024, the configuration is:
+```
+1,1024,1,1024,1,2048,0,1,1
+```
+The, please run the following command to perform the simulation:
+```
+python Script_run.py
+```
 ## References
 ```
 Pragnya Sudershan Nalla, Zhenyu Wang, Sapan Agarwal, T. Patrick Xiao, Christopher H. Bennett, Matthew J. Marinella, Jae-sun Seo, and Yu Cao, SHIFFT: A Scalable Hybrid In-Memory Computing FFT Accelerator, ISVLSI 2024
