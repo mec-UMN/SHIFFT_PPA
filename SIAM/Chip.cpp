@@ -397,6 +397,7 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 		if (markNM[i] == 0) {
 			//globalBusWidth += (desiredTileSizeCM_y)/param->numColMuxed;
 			globalBusWidth=param->maxGlobalBusWidth;
+			cout<<"globalBusWidth"<<globalBusWidth<<endl;
 		} else {
 			globalBusWidth += (desiredPESizeNM)*ceil((double)sqrt(numPENM))+(desiredPESizeNM)*ceil((double)sqrt(numPENM))/param->numColMuxed;
 		}	
@@ -1077,6 +1078,7 @@ double ChipCalculatePerformance(MemCell& cell, int layerNumber, const string &ne
 		cout<<"weightMatrixRow"<<weightMatrixRow<<endl;
 		cout<<"weightMatrixCol"<<weightMatrixCol<<endl;
 		cout<<"desiredTileSize_x"<<desiredTileSizeCM_x<<endl;
+		cout<<"GhTree->busWidth)"<<GhTree->busWidth<<endl;
 		GhTree->CalculateLatency(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth, ceil((numBitToLoadOut+numBitToLoadIn+numBitToLoadIn)/GhTree->busWidth));
 		GhTree->CalculatePower(0, 0, tileLocaEachLayer[0][l], tileLocaEachLayer[1][l], CMTileheight, CMTilewidth, GhTree->busWidth, 
 							ceil((numBitToLoadOut+numBitToLoadIn)/GhTree->busWidth));

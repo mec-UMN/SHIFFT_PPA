@@ -877,11 +877,12 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 
 				readLatencyADC = multilevelSenseAmp.readLatency + multilevelSAEncoder.readLatency;
 				readLatencyAccum = shiftAdd.readLatency+shiftAddWeight.readLatency;
-				//cout<<"multilevelSAEncoder.readLatency"<<multilevelSAEncoder.readLatency<<endl;
-				//cout<<"muxDecoder.readLatency"<<muxDecoder.readLatency<<endl;
-				//cout<<"shiftAdd.readLatency"<<shiftAdd.readLatency<<endl;
-				//cout<<"wlSwitchMatrix.readLatency"<<wlSwitchMatrix.readLatency<<endl;
-				//cout<<"mux.readLatency"<<mux.readLatency<<endl;
+				cout<<"multilevelSAEncoder.readLatency"<<multilevelSAEncoder.readLatency<<endl;
+				cout<<" multilevelSenseAmp.readLatency"<< multilevelSenseAmp.readLatency<<endl;
+				cout<<"muxDecoder.readLatency"<<muxDecoder.readLatency<<endl;
+				cout<<"shiftAdd.readLatency"<<shiftAdd.readLatency<<endl;
+				cout<<"wlSwitchMatrix.readLatency"<<wlSwitchMatrix.readLatency<<endl;
+				cout<<"mux.readLatency"<<mux.readLatency<<endl;
 				readLatencyOther = MAX(wlNewSwitchMatrix.readLatency + wlSwitchMatrix.readLatency, ((numColMuxed > 1)==true? (mux.readLatency+muxDecoder.readLatency):0));
 				// readLatencyOther = muxDecoder.readLatency;
 				//cout<<"readLatency"<<readLatency<<endl;

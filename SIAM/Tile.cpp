@@ -191,6 +191,7 @@ void TileInitialize_new(InputParameter& inputParameter, Technology& tech, MemCel
 		inputBuffer->Initialize((param->tileBufferCoreSizeRow*param->tileBufferCoreSizeCol), param->tileBufferCoreSizeCol, 1, param->unitLengthWireResistance, param->clkFreq, param->peBufferType);
 	}
 	hTree->Initialize(ceil((double)sqrt((double)numPE)), ceil((double)sqrt((double)numPE)), param->localBusDelayTolerance, numPE*desiredIMCsize_x);
+	cout<<"desiredIMCsize_x"<<desiredIMCsize_x<<endl;
 }
 
 

@@ -182,7 +182,7 @@ def Calc_values(EDP):
     total_energy = (total_readenergy+total_noc_power/chiplet_num*total_noc_latency*1e9+total_leakage)*1e-12
     total_latency =  (total_noc_latency*1e9+total_readlatency)*1e-9
     EDP.append(total_energy*total_latency)
-
+    #EDP.append([total_ADC_energy, total_ADC_latency, total_routing_energy, total_routing_latency])
     return EDP
 
 def print_file(val):

@@ -30,10 +30,10 @@ print("Files moved successfully.")
 
 # Predefined array of new parameter values
 
-adc_bits=2**np.array([8, 7, 6, 5, 4, 3])
+adc_bits=2**np.array([7, 6, 5, 4])
 adc_bits=adc_bits.tolist()
 count = len(adc_bits)
-mode = 1
+mode = 0
 # Parameter name to be replaced
 #parameter_name = "levelOutput"
 if mode == 1:
